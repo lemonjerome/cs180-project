@@ -5,12 +5,16 @@ import torch.nn.functional as F
 
 # Load model and tokenizer
 MODEL_PATH = "bert_model"
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
+
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+
+model = AutoModelForSequenceClassification.from_pretrained(
+    MODEL_PATH,
+    torch_dtype=torch.float32  # Ensure full precision to avoid meta tensors
+).to(device)
+
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
-# Use MPS or CPU
-device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-model.to(device)
 model.eval()
 
 # Label mapping (modify this based on your classes)
@@ -26,7 +30,6 @@ if st.button("Classify"):
     if text_input.strip() == "":
         st.warning("Please enter some text.")
     else:
-        # Tokenize input
         encoded = tokenizer(
             text_input,
             truncation=True,
