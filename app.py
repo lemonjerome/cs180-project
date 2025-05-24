@@ -1,34 +1,32 @@
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import streamlit as st
 import torch
 import torch.nn.functional as F
-from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification
 
 # Load model and tokenizer
 MODEL_PATH = "bert_model"
+
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
-# Load model config
-config = AutoConfig.from_pretrained(MODEL_PATH)
+model = AutoModelForSequenceClassification.from_pretrained(
+    MODEL_PATH,
+    torch_dtype=torch.float32,
+    trust_remote_code=True,
+    use_safetensors=True  # 👈 Tells Transformers to load model.safetensors
+).to(device)
 
-# Initialize model in empty state on the target device
-model = AutoModelForSequenceClassification.from_config(config).to_empty(device=device)
-
-# Load the weights manually from the saved state dict
-model.load_state_dict(torch.load(f"{MODEL_PATH}/pytorch_model.bin", map_location=device))
-
-# Load tokenizer
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
-# Set model to eval mode
 model.eval()
 
-# Label mapping (modify this based on your actual class names)
+# Label mapping
 label_map = {0: "Class 0", 1: "Class 1", 2: "Class 2", 3: "Class 3", 4: "Class 4"}
 
 # Streamlit UI
 st.title("TCFD Recommendations")
 st.header("BERT-based Text Classification App")
 st.subheader("CS 180 THR - Domingo, Ramos, Senatin")
+
 text_input = st.text_area("Enter your text:")
 
 if st.button("Classify"):
