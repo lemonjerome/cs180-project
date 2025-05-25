@@ -45,7 +45,7 @@ if st.button("Classify"):
             text_input,
             truncation=True,
             padding="max_length",
-            max_length=128,
+            max_length=175,
             return_tensors="pt"
         )
 

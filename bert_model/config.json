@@ -33,7 +33,7 @@
   "position_embedding_type": "absolute",
   "problem_type": "single_label_classification",
   "torch_dtype": "float32",
-  "transformers_version": "4.51.3",
+  "transformers_version": "4.52.3",
   "type_vocab_size": 2,
   "use_cache": true,
   "vocab_size": 28996
