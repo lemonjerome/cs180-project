@@ -15,7 +15,7 @@ def load_model_and_tokenizer():
         trust_remote_code=True,
         use_safetensors=True
     )
-    tokenizer = AutoTokenizer.from_pretrained("bert_model")
+    tokenizer = AutoTokenizer.from_pretrained("bert_mlm")
     model.eval()
     return model, tokenizer
 
